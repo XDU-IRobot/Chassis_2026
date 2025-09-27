@@ -26,10 +26,12 @@ void GimbalCommunicator::SendSuperCapData() {
   super_cap->UpdateChassisBuffer(tx_super_cap_data_.chassis_power_buffer);
   // if (chassis_mode_data.chassis_mode != UNABLE) {
   //   if (tx_super_cap_data_.chassis_power_buffer >= 50) {
-  //     super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, tx_super_cap_data_.chassis_power_limit, 1,
+  //     super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, tx_super_cap_data_.chassis_power_limit,
+  //     1,
   //                               1);
   //   } else if (tx_super_cap_data_.chassis_power_buffer >= 30) {
-  //     super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, tx_super_cap_data_.chassis_power_limit / 2,
+  //     super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, tx_super_cap_data_.chassis_power_limit /
+  //     2,
   //                               1, 1);
   //   } else {
   //     super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, 0, 1, 1);
