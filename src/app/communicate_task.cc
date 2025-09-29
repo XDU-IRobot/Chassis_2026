@@ -1,9 +1,11 @@
 #include "communicate_task.hpp"
+#include "chassis_task.hpp"
 
 SuperCap *super_cap;
 GimbalCommunicator *gimbal_communicator;
 GimbalCommunicator::GimbalCommunicator(CanInterface &can) : CanDevice(can, 0x120) {}
 
+extern Chassis *chassis;
 extern Can can1;
 extern Referee<RefereeRevision::kV170> referee_data_buffer;
 
@@ -24,19 +26,19 @@ void GimbalCommunicator::comunicate_data_update() {
 
 void GimbalCommunicator::SendSuperCapData() {
   super_cap->UpdateChassisBuffer(tx_super_cap_data_.chassis_power_buffer);
-  // if (chassis_mode_data.chassis_mode != UNABLE) {
-  //   if (tx_super_cap_data_.chassis_power_buffer >= 50) {
-  //     super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, tx_super_cap_data_.chassis_power_limit, 1,
-  //                               1);
-  //   } else if (tx_super_cap_data_.chassis_power_buffer >= 30) {
-  //     super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, tx_super_cap_data_.chassis_power_limit / 2,
-  //                               1, 1);
-  //   } else {
-  //     super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, 0, 1, 1);
-  //   }
-  // } else {
-  //   super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, 0, 0, 0);
-  // }
+  if (chassis->chassis_mode() != 5) {
+    if (tx_super_cap_data_.chassis_power_buffer >= 50) {
+      super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, tx_super_cap_data_.chassis_power_limit, 1,
+                                1);
+    } else if (tx_super_cap_data_.chassis_power_buffer >= 30) {
+      super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, tx_super_cap_data_.chassis_power_limit / 2,
+                                1, 1);
+    } else {
+      super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, 0, 1, 1);
+    }
+  } else {
+    super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, 0, 0, 0);
+  }
 }
 
 void GimbalCommunicator::SendGimbalData() {
@@ -66,7 +68,7 @@ void GimbalCommunicator::RxCallback(const hal::CanMsg *msg) {
 extern "C" {
 void CommunicateTask(const void *argument) {
   // 创建超级电容容对象
-  // super_cap = new SuperCap(can1);
+  super_cap = new SuperCap(can1);
   while (1) {
     // 接收CAN数据
     gimbal_communicator->comunicate_data_update();

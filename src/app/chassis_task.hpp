@@ -18,83 +18,39 @@ class Chassis {
   ~Chassis() = default;
 
  public:
+  u8 chassis_mode() { return chassis_mode_data_.chassis_mode; };
+  u8 chassis_speed_mode() { return chassis_mode_data_.chassis_speed_mode; };
+  u8 buff_state() { return chassis_mode_data_.buff_state; };
+
+ public:
   void ChassisInit();          // 底盘初始化
-  void WheelYawAngleInit();    // 底盘舵电机和yaw轴角度初始化
+  void WheelYawAngleChange();  // 底盘舵电机和yaw轴角度变化
   void DataUpdateAndHandle();  // 数据更新与处理
 
  private:
-  // yaw轴电机
-  GM6020 motor_yaw_;
-
-  // 底盘电机(左前1, 右前2, 右后3, 左后4)
-  GM6020 gm6020_1_;
-  GM6020 gm6020_2_;
-  GM6020 gm6020_3_;
-  GM6020 gm6020_4_;
-
-  M3508 m3508_1_;
-  M3508 m3508_2_;
-  M3508 m3508_3_;
-  M3508 m3508_4_;
-
-  // pid实例化
-  RingPID<PIDType::kPosition> yaw_pid_position_;
-
-  RingPID<PIDType::kPosition> gm6020_pid_position_1_;
-  RingPID<PIDType::kPosition> gm6020_pid_position_2_;
-  RingPID<PIDType::kPosition> gm6020_pid_position_3_;
-  RingPID<PIDType::kPosition> gm6020_pid_position_4_;
-
-  PID<PIDType::kPosition> gm6020_pid_speed_1_;
-  PID<PIDType::kPosition> gm6020_pid_speed_2_;
-  PID<PIDType::kPosition> gm6020_pid_speed_3_;
-  PID<PIDType::kPosition> gm6020_pid_speed_4_;
-
-  PID<PIDType::kPosition> m3508_pid_speed_1_;
-  PID<PIDType::kPosition> m3508_pid_speed_2_;
-  PID<PIDType::kPosition> m3508_pid_speed_3_;
-  PID<PIDType::kPosition> m3508_pid_speed_4_;
-
-  RingPID<PIDType::kPosition> gm6020_single_wheel_pid_position_1_;
-  RingPID<PIDType::kPosition> gm6020_single_wheel_pid_position_2_;
-  RingPID<PIDType::kPosition> gm6020_single_wheel_pid_position_3_;
-  RingPID<PIDType::kPosition> gm6020_single_wheel_pid_position_4_;
-
-  PID<PIDType::kPosition> gm6020_single_wheel_pid_speed_1_;
-  PID<PIDType::kPosition> gm6020_single_wheel_pid_speed_2_;
-  PID<PIDType::kPosition> gm6020_single_wheel_pid_speed_3_;
-  PID<PIDType::kPosition> gm6020_single_wheel_pid_speed_4_;
-
-  PID<PIDType::kPosition> m3508_single_wheel_pid_speed_1_;
-  PID<PIDType::kPosition> m3508_single_wheel_pid_speed_2_;
-  PID<PIDType::kPosition> m3508_single_wheel_pid_speed_3_;
-  PID<PIDType::kPosition> m3508_single_wheel_pid_speed_4_;
-
-  SteeringChassis steering_chassis_;
-
   // 底盘模式
-  enum ChassisMode {
-    NOFORCE,         // 无力模式
-    FOLLOW,          // 跟随模式
-    ROTATE,          // 小陀螺模式
-    REVERSE_ROTATE,  // 反向小陀螺模式
-    SINGLE_WHEEL,    // 单轮上坡模式
-    UNABLE,          // 断电模式
-    TEST,            // 测试模式
+  typedef enum {
+    NOFORCE = 0,         // 无力模式
+    FOLLOW = 1,          // 跟随模式
+    ROTATE = 2,          // 小陀螺模式
+    REVERSE_ROTATE = 3,  // 反向小陀螺模式
+    SINGLE_WHEEL = 4,    // 单轮上坡模式
+    UNABLE = 5,          // 断电模式
+    TEST = 6,            // 测试模式
 
-    DAFU,    // 大符模式
-    XIAOFU,  // 小符模式
-    NORMAL,  // 正常模式
+    DAFU = 7,    // 大符模式
+    XIAOFU = 8,  // 小符模式
+    NORMAL = 9,  // 正常模式
 
-    NORMAL_SPEED,  // 正常速度模式
-    HIGH_SPEED,    // 高速模式
-  };
+    NORMAL_SPEED = 10,  // 正常速度模式
+    HIGH_SPEED = 11,    // 高速模式
+  } ChassisState;
 
   struct ChassisModeData {
-    ChassisMode chassis_mode;        // 底盘模式（默认无力）
-    ChassisMode chassis_speed_mode;  // 底盘速度模式（默认正常速度）
-    ChassisMode buff_state;          // 打符状态（0：未打符，1：大幅，2：小幅）
-    bool high_speed_mode_flag;       // 高速模式标志（按下C键为true, 松开C键为false）
+    ChassisState chassis_mode;        // 底盘模式（默认无力）
+    ChassisState chassis_speed_mode;  // 底盘速度模式（默认正常速度）
+    ChassisState buff_state;          // 打符状态（0：未打符，1：大幅，2：小幅）
+    bool high_speed_mode_flag;        // 高速模式标志（按下C键为true, 松开C键为false）
   };
 
   struct ChassisTargetSpeed {
@@ -160,6 +116,55 @@ class Chassis {
     f32 super_cap_current;      // 超级电容电流值（-20~20A）
     bool super_cap_error_flag;  // 超级电容故障标志(超级电容故障时，为true，超级电容正常时，为false)
   };
+
+  // yaw轴电机
+  GM6020 motor_yaw_;
+
+  // 底盘电机(左前1, 右前2, 右后3, 左后4)
+  GM6020 gm6020_1_;
+  GM6020 gm6020_2_;
+  GM6020 gm6020_3_;
+  GM6020 gm6020_4_;
+
+  M3508 m3508_1_;
+  M3508 m3508_2_;
+  M3508 m3508_3_;
+  M3508 m3508_4_;
+
+  // pid实例化
+  RingPID<PIDType::kPosition> yaw_pid_position_;
+
+  RingPID<PIDType::kPosition> gm6020_pid_position_1_;
+  RingPID<PIDType::kPosition> gm6020_pid_position_2_;
+  RingPID<PIDType::kPosition> gm6020_pid_position_3_;
+  RingPID<PIDType::kPosition> gm6020_pid_position_4_;
+
+  PID<PIDType::kPosition> gm6020_pid_speed_1_;
+  PID<PIDType::kPosition> gm6020_pid_speed_2_;
+  PID<PIDType::kPosition> gm6020_pid_speed_3_;
+  PID<PIDType::kPosition> gm6020_pid_speed_4_;
+
+  PID<PIDType::kPosition> m3508_pid_speed_1_;
+  PID<PIDType::kPosition> m3508_pid_speed_2_;
+  PID<PIDType::kPosition> m3508_pid_speed_3_;
+  PID<PIDType::kPosition> m3508_pid_speed_4_;
+
+  RingPID<PIDType::kPosition> gm6020_single_wheel_pid_position_1_;
+  RingPID<PIDType::kPosition> gm6020_single_wheel_pid_position_2_;
+  RingPID<PIDType::kPosition> gm6020_single_wheel_pid_position_3_;
+  RingPID<PIDType::kPosition> gm6020_single_wheel_pid_position_4_;
+
+  PID<PIDType::kPosition> gm6020_single_wheel_pid_speed_1_;
+  PID<PIDType::kPosition> gm6020_single_wheel_pid_speed_2_;
+  PID<PIDType::kPosition> gm6020_single_wheel_pid_speed_3_;
+  PID<PIDType::kPosition> gm6020_single_wheel_pid_speed_4_;
+
+  PID<PIDType::kPosition> m3508_single_wheel_pid_speed_1_;
+  PID<PIDType::kPosition> m3508_single_wheel_pid_speed_2_;
+  PID<PIDType::kPosition> m3508_single_wheel_pid_speed_3_;
+  PID<PIDType::kPosition> m3508_single_wheel_pid_speed_4_;
+
+  SteeringChassis steering_chassis_;
 
   f32 gm6020_initial_angle_[4];     // 舵电机初始角度
   f32 gm6020_initial_position_[4];  // 舵电机初始位置编码值

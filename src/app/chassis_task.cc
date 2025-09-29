@@ -76,7 +76,15 @@ Chassis::Chassis()
       referee_data_{800, 0, 0, 0, 0, 0.0f},
       super_cap_data_{0.0f, 0.0f, false} {}
 
-void Chassis::WheelYawAngleInit() {
+void Chassis::ChassisInit() {
+  can1.SetFilter(0, 0);
+  can2.SetFilter(0, 0);
+  can1.Begin();
+  can2.Begin();
+  chassis = new Chassis();
+}
+
+void Chassis::WheelYawAngleChange() {
   if (chassis_mode_data_.chassis_mode == SINGLE_WHEEL) {
     yaw_motor_value_.yaw_initial_angle = 4861.0f;
     gm6020_initial_position_[0] = 1100.0f;
@@ -495,15 +503,8 @@ void Chassis::ChassisCurrentUpdate() {
   DjiMotor<>::SendCommand();
 }
 
-void Chassis::ChassisInit() {
-  can1.SetFilter(0, 0);
-  can2.SetFilter(0, 0);
-  can1.Begin();
-  can2.Begin();
-  chassis = new Chassis();
-}
-
 void Chassis::DataUpdateAndHandle() {
+  WheelYawAngleChange();
   DataUpdate();
   RemainBulletCount();
   SpeedLimitUpdate();
@@ -519,7 +520,6 @@ extern "C" {
 void ChassisTask(const void *argument) {
   chassis->ChassisInit();
   while (1) {
-    chassis->WheelYawAngleInit();
     chassis->DataUpdateAndHandle();
   }
 }
