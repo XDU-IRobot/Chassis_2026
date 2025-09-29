@@ -23,4 +23,4 @@ int Pop(Queue_t *buffer1, Queue_t *buffer2, u8 data[11]);
 void UI_EnQueue(Queue_t *q, u8 *val, u8 lenth);
 int UI_Pop(Queue_t *buffer1, u8 *data);
 
-#endif /* __QUEUE_HPP__ */
+#endif  /* __QUEUE_HPP__ */ 

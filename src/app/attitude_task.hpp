@@ -22,6 +22,7 @@ struct INS_t {
   const f32 yaw_gyro_bias = 0.00124f;  // 偏航角（角度值）的陀螺仪偏移量
 };
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif

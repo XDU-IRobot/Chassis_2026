@@ -14,20 +14,20 @@ using rm::hal::Can;
 using rm::modules::algorithm::SteeringChassis;
 
 class Chassis {
+ public:
   Chassis();
   ~Chassis() = default;
 
- public:
   u8 chassis_mode() { return chassis_mode_data_.chassis_mode; };
   u8 chassis_speed_mode() { return chassis_mode_data_.chassis_speed_mode; };
   u8 buff_state() { return chassis_mode_data_.buff_state; };
+  i16 remain_bullet_number() { return referee_data_.remain_bullet_number; };
+  f32 super_cap_voltage() { return super_cap_data_.super_cap_voltage; }; 
 
- public:
   void ChassisInit();          // 底盘初始化
   void WheelYawAngleChange();  // 底盘舵电机和yaw轴角度变化
   void DataUpdateAndHandle();  // 数据更新与处理
 
- private:
   // 底盘模式
   typedef enum {
     NOFORCE = 0,         // 无力模式
@@ -46,6 +46,7 @@ class Chassis {
     HIGH_SPEED = 11,    // 高速模式
   } ChassisState;
 
+ private:
   struct ChassisModeData {
     ChassisState chassis_mode;        // 底盘模式（默认无力）
     ChassisState chassis_speed_mode;  // 底盘速度模式（默认正常速度）
@@ -112,8 +113,8 @@ class Chassis {
   };
 
   struct SuperCapData {
-    f32 super_cap_voltage;  // 超级电容电压值（0~30V）
-    f32 super_cap_current;  // 超级电容电流值（-20~20A）
+    f32 super_cap_voltage;      // 超级电容电压值（0~30V）
+    f32 super_cap_current;      // 超级电容电流值（-20~20A）
     bool super_cap_error_flag;  // 超级电容故障标志(超级电容故障时，为true，超级电容正常时，为false)
   };
 
@@ -179,7 +180,6 @@ class Chassis {
   RefereeData referee_data_;                 // 裁判系统数据
   SuperCapData super_cap_data_;              // 超级电容数据
 
- private:
   void DataUpdate();                // 数据更新
   void RemainBulletCount();         // 剩余子弹计算
   void SpeedLimitUpdate();          // 速度系数更新

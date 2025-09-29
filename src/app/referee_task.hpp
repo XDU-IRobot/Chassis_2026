@@ -13,10 +13,10 @@ using namespace rm::hal;
 using namespace rm::device;
 
 class UIData {
+ public:
   UIData() = default;
   ~UIData() = default;
 
- public:
   Queue_t UI_send_buffer[2];
 
   void UIDataInit();

@@ -22,11 +22,11 @@ extern void CommunicateTask(const void *argument);
 #endif
 
 class GimbalCommunicator : public CanDevice {
+ public:
   explicit GimbalCommunicator(CanInterface &can);
   GimbalCommunicator() = delete;
   ~GimbalCommunicator() override = default;
 
- public:
   i8 remote_speed_x() { return gimbal_data_feedback_.remote_speed_x; }
   i8 remote_speed_y() { return gimbal_data_feedback_.remote_speed_y; }
   u8 chassis_mode() { return gimbal_data_feedback_.chassis_mode; }
@@ -35,7 +35,6 @@ class GimbalCommunicator : public CanDevice {
   u8 suggest_fire_flag() { return gimbal_data_feedback_.suggest_fire_flag; }
   i8 aim_speed_change() { return gimbal_data_feedback_.aim_speed_change; }
 
- public:
   void RxCallback(const CanMsg *msg) override;  // 接收数据
   void SendGimbalData();                        // 发送云台数据
   void SendSuperCapData();                      // 发送超级电容数据

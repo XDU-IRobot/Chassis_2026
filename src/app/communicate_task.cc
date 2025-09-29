@@ -26,7 +26,7 @@ void GimbalCommunicator::comunicate_data_update() {
 
 void GimbalCommunicator::SendSuperCapData() {
   super_cap->UpdateChassisBuffer(tx_super_cap_data_.chassis_power_buffer);
-  if (chassis->chassis_mode() != 5) {
+  if (chassis->chassis_mode() != chassis->UNABLE) {
     if (tx_super_cap_data_.chassis_power_buffer >= 50) {
       super_cap->UpdateSettings(tx_super_cap_data_.chassis_power_limit, 300, tx_super_cap_data_.chassis_power_limit, 1,
                                 1);
