@@ -24,7 +24,6 @@ Chassis::Chassis()
       m3508_2_(can2, 2),
       m3508_3_(can2, 3),
       m3508_4_(can2, 4),
-      
       // yaw轴电机的位置环PID
       yaw_pid_position_(10.0f, 0.0f, 600.0f, 8000.0f, 0.0f, 8191.0f),
       // GM6020电机的位置环PID
