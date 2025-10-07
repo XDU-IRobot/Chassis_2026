@@ -3,6 +3,8 @@
 #include "communicate_task.hpp"
 #include "chassis_task.hpp"
 
+Queue_t UI_send_buffer[2];
+
 static UIData *UI_data;
 static Serial referee_uart(huart6, 128, rm::hal::stm32::UartMode::kDma, rm::hal::stm32::UartMode::kDma);
 
@@ -191,21 +193,22 @@ void UIData::DataSend(Serial msg, u8 *data, u8 len) { msg.Write(data, len); }
 
 extern "C" {
 void RefereeTask(void const *argument) {
-  // Serial referee_uart(huart6, 128, rm::hal::stm32::UartMode::kDma, rm::hal::stm32::UartMode::kDma);
+  Serial referee_uart(huart6, 128, stm32::UartMode::kDma, stm32::UartMode::kDma);
   RcTcRefereeData referee_data_rc_tc(referee_uart);
   referee_data_rc_tc.Begin();
   // 初始化队列
-  QueueInit(&UI_data->UI_send_buffer[0]);
-  QueueInit(&UI_data->UI_send_buffer[1]);
+  QueueInit(&UI_send_buffer[0]);
+  QueueInit(&UI_send_buffer[1]);
   while (1) {
     robot_id = referee_data_buffer.data().robot_status.robot_id;
-    // if (gimbal_communicator->UI_show_flag == 1) {
-    //   UI_data->UIDataInit();
-    //   UI_data->UIDataSend();
-    // } else {
-    //   UI_data->UIDataUpdate();
-    //   UI_data->UIDataSend();
-    // }
+    if (gimbal_communicator->UI_show_flag() == 1) {
+      UI_data->UIDataInit();
+      UI_data->UIDataSend();
+    } else {
+      UI_data->UIDataUpdate();
+      UI_data->UIDataSend();
+    }
+    osDelay(10);
   }
 }
 }

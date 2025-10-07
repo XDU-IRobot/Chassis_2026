@@ -18,7 +18,7 @@
           "-f",
           "./openocd/openocd.cfg",
           "-c",
-          "program ./build/Debug/template.elf verify reset exit"
+          "program ./build/Debug/steer_wheel_chassis.elf verify reset exit"
         ],
         "dependsOn": [
           "Build"

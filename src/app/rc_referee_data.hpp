@@ -1,8 +1,7 @@
-#ifndef __RC_REFEREE_DATA_H__
-#define __RC_REFEREE_DATA_H__
+#ifndef __RC_REFEREE_DATA_HPP__
+#define __RC_REFEREE_DATA_HPP__
 
 #include <queue>
-#include <array>
 
 #include "librm.hpp"
 

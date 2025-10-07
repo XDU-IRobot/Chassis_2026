@@ -1,5 +1,5 @@
-#ifndef __REFEREE_TASK_H__
-#define __REFEREE_TASK_H__
+#ifndef __REFEREE_TASK_HPP__
+#define __REFEREE_TASK_HPP__
 
 #include "usart.h"
 
@@ -17,8 +17,6 @@ class UIData {
   UIData() = default;
   ~UIData() = default;
 
-  Queue_t UI_send_buffer[2];
-
   void UIDataInit();
   void UIDataUpdate();
   void UIDataSend();
@@ -33,8 +31,8 @@ class UIData {
   String_Data mode, aimbot;
   // 瞄准线
   Graph_Data imagey, imagex;
-
-  void DataSend(Serial msg, u8 *data, u8 len);  // UI数据发送
+  // UI数据发送  
+  void DataSend(Serial msg, u8 *data, u8 len);
 };
 
 #ifdef __cplusplus
@@ -47,4 +45,4 @@ extern void RefereeTask(void const *argument);
 }
 #endif
 
-#endif /* __REFEREE_TASK_H__ */
+#endif /* __REFEREE_TASK_HPP__ */

@@ -155,7 +155,9 @@
         "cilent_ui.h": "c",
         "utils.hpp": "c",
         "crc.h": "c",
-        "queue.h": "c"
+        "queue.h": "c",
+        "stm32f4xx.h": "c",
+        "cmsis_armcc.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

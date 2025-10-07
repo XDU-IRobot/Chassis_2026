@@ -2,14 +2,14 @@
 #include "chassis_task.hpp"
 
 SuperCap *super_cap;
-GimbalCommunicator *gimbal_communicator;
+GimbalCommunicator *gimbal_communicator = nullptr;
 GimbalCommunicator::GimbalCommunicator(CanInterface &can) : CanDevice(can, 0x120) {}
 
 extern Chassis *chassis;
 extern Can can1;
 extern Referee<RefereeRevision::kV170> referee_data_buffer;
 
-void GimbalCommunicator::comunicate_data_update() {
+void GimbalCommunicator::ComunicateDataUpdate() {
   // 接收裁判系统数据
   tx_gimbal_data_.robot_id = referee_data_buffer.data().robot_status.robot_id;
   tx_gimbal_data_.power_state = referee_data_buffer.data().robot_status.power_management_gimbal_output |
@@ -67,11 +67,13 @@ void GimbalCommunicator::RxCallback(const hal::CanMsg *msg) {
 
 extern "C" {
 void CommunicateTask(const void *argument) {
+  // 创建云台通信对象
+  gimbal_communicator = new GimbalCommunicator{can1};
   // 创建超级电容容对象
   super_cap = new SuperCap(can1);
   while (1) {
     // 接收CAN数据
-    gimbal_communicator->comunicate_data_update();
+    gimbal_communicator->ComunicateDataUpdate();
     // 发送CAN数据
     // 发送云台数据
     gimbal_communicator->SendGimbalData();

@@ -6,11 +6,10 @@ Chassis *chassis;
 Can can1(hcan1);
 Can can2(hcan2);
 
+extern INS_t INS;
 extern SuperCap *super_cap;
 extern GimbalCommunicator *gimbal_communicator;
 extern Referee<rm::device::RefereeRevision::kV170> referee_data_buffer;
-
-extern INS_t *INS;
 
 Chassis::Chassis()
     : motor_yaw_(can1, 4),
@@ -81,7 +80,6 @@ void Chassis::ChassisInit() {
   can2.SetFilter(0, 0);
   can1.Begin();
   can2.Begin();
-  chassis = new Chassis();
 }
 
 void Chassis::WheelYawAngleChange() {
@@ -373,12 +371,12 @@ void Chassis::WheelSpeedAngleCalculate() {
 
 void Chassis::UpSlopeSpeedAdjust() {
   if (chassis_mode_data_.chassis_mode == FOLLOW) {
-    if (INS->pitch > 5.0f) {
-      chassis_key_value_.kup_slope_front_wheel_speed_limit = 1.0f - (INS->pitch / 60.0f);
-      chassis_key_value_.kup_slope_rear_wheel_speed_limit = 1.0f + (INS->pitch / 30.0f);
-    } else if (INS->pitch < -5.0f) {
-      chassis_key_value_.kup_slope_front_wheel_speed_limit = 1.0f - (INS->pitch / 30.0f);
-      chassis_key_value_.kup_slope_rear_wheel_speed_limit = 1.0f + (INS->pitch / 60.0f);
+    if (INS.pitch > 5.0f) {
+      chassis_key_value_.kup_slope_front_wheel_speed_limit = 1.0f - (INS.pitch / 60.0f);
+      chassis_key_value_.kup_slope_rear_wheel_speed_limit = 1.0f + (INS.pitch / 30.0f);
+    } else if (INS.pitch < -5.0f) {
+      chassis_key_value_.kup_slope_front_wheel_speed_limit = 1.0f - (INS.pitch / 30.0f);
+      chassis_key_value_.kup_slope_rear_wheel_speed_limit = 1.0f + (INS.pitch / 60.0f);
     } else {
       chassis_key_value_.kup_slope_front_wheel_speed_limit = 1.0f;
       chassis_key_value_.kup_slope_rear_wheel_speed_limit = 1.0f;
@@ -392,7 +390,7 @@ void Chassis::UpSlopeSpeedAdjust() {
     motor_target_value_.m3508_set_speed[2] *= chassis_key_value_.kup_slope_rear_wheel_speed_limit;
     motor_target_value_.m3508_set_speed[3] *= chassis_key_value_.kup_slope_rear_wheel_speed_limit;
   } else if (chassis_mode_data_.chassis_mode == SINGLE_WHEEL) {
-    if (INS->pitch > 5.0f && INS->roll > 5.0f) {
+    if (INS.pitch > 5.0f && INS.roll > 5.0f) {
       chassis_key_value_.ksingle_wheel_flont_speed_limit = 0.5f;
       chassis_key_value_.ksingle_wheel_rear_speed_limit = 8.0f;
       chassis_key_value_.ksingle_wheel_left_speed_limit = 0.2;
@@ -518,9 +516,11 @@ void Chassis::DataUpdateAndHandle() {
 
 extern "C" {
 void ChassisTask(const void *argument) {
+  chassis = new Chassis();
   chassis->ChassisInit();
   while (1) {
     chassis->DataUpdateAndHandle();
+    osDelay(1);
   }
 }
 }

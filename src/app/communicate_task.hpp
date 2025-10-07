@@ -11,17 +11,7 @@ using namespace rm;
 using namespace rm::hal;
 using namespace rm::device;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-extern void CommunicateTask(const void *argument);
-
-#ifdef __cplusplus
-}
-#endif
-
-class GimbalCommunicator : public CanDevice {
+class GimbalCommunicator final : public CanDevice {
  public:
   explicit GimbalCommunicator(CanInterface &can);
   GimbalCommunicator() = delete;
@@ -38,7 +28,7 @@ class GimbalCommunicator : public CanDevice {
   void RxCallback(const CanMsg *msg) override;  // 接收数据
   void SendGimbalData();                        // 发送云台数据
   void SendSuperCapData();                      // 发送超级电容数据
-  void comunicate_data_update();                // 数据更新
+  void ComunicateDataUpdate();                  // 数据更新
 
  private:
   // 发送给超级电容的信息
@@ -73,5 +63,15 @@ class GimbalCommunicator : public CanDevice {
     u8 reserve[2];         // 保留位
   } gimbal_data_feedback_;
 };
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern void CommunicateTask(const void *argument);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __COMMUNICATE_TASK_HPP__ */

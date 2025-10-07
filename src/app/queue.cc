@@ -31,8 +31,8 @@ void EnQueue(Queue_t *q, u8 *val, u8 lenth) {
 }
 
 // 0代表空 -1代表出错
-int Pop(Queue_t *buffer1, Queue_t *buffer2, u8 data[11]) {
-  int i = 0;
+i8 Pop(Queue_t *buffer1, Queue_t *buffer2, u8 data[11]) {
+  i8 i = 0;
   if (IsEmpty(buffer1)) {
     if (IsEmpty(buffer2))
       return 0;
@@ -70,7 +70,7 @@ void UI_EnQueue(Queue_t *q, u8 *val, u8 lenth) {
   q->RW_Lock = 0;
 }
 
-int UI_Pop(Queue_t *buffer1, u8 *data) {
+i8 UI_Pop(Queue_t *buffer1, u8 *data) {
   if (IsEmpty(buffer1)) return 0;
   if (buffer1->RW_Lock == 0) {
     for (u8 i = 0; i < 4; i++) {
