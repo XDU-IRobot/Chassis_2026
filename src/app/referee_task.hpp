@@ -31,7 +31,7 @@ class UIData {
   String_Data mode, aimbot;
   // 瞄准线
   Graph_Data imagey, imagex;
-  // UI数据发送  
+  // UI数据发送
   void DataSend(Serial msg, u8 *data, u8 len);
 };
 

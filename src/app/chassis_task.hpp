@@ -113,8 +113,8 @@ class Chassis {
   };
 
   struct SuperCapData {
-    f32 super_cap_voltage;  // 超级电容电压值（0~30V）
-    f32 super_cap_current;  // 超级电容电流值（-20~20A）
+    f32 super_cap_voltage;      // 超级电容电压值（0~30V）
+    f32 super_cap_current;      // 超级电容电流值（-20~20A）
     bool super_cap_error_flag;  // 超级电容故障标志(超级电容故障时，为true，超级电容正常时，为false)
   };
 
